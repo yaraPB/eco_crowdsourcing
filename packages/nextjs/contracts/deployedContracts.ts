@@ -4,6 +4,386 @@
  */
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
-const deployedContracts = {} as const;
+const deployedContracts = {
+  31337: {
+    YourContract: {
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      abi: [
+        {
+          inputs: [],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "submissionId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "submitter",
+              type: "address",
+            },
+          ],
+          name: "ContributionSubmitted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "address",
+              name: "contributor",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "int256",
+              name: "newRewardPoints",
+              type: "int256",
+            },
+          ],
+          name: "ContributorPenalized",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "address",
+              name: "contributor",
+              type: "address",
+            },
+          ],
+          name: "ContributorReinstated",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "submissionId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "enum YourContract.Status",
+              name: "status",
+              type: "uint8",
+            },
+          ],
+          name: "SubmissionFinalized",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "submissionId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "decision",
+              type: "string",
+            },
+          ],
+          name: "VerificationSubmitted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "submissionId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "bytes32",
+              name: "merkleRoot",
+              type: "bytes32",
+            },
+          ],
+          name: "VerifiersCommitted",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "submissionId",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes32",
+              name: "merkleRoot",
+              type: "bytes32",
+            },
+          ],
+          name: "commitVerifiers",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "contributorList",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "contributors",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "registered",
+              type: "bool",
+            },
+            {
+              internalType: "string",
+              name: "region",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "department",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "idDocHash",
+              type: "string",
+            },
+            {
+              internalType: "int256",
+              name: "rewardPoints",
+              type: "int256",
+            },
+            {
+              internalType: "bool",
+              name: "active",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "coordinator",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getBannedContributors",
+          outputs: [
+            {
+              internalType: "address[]",
+              name: "",
+              type: "address[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "submissionId",
+              type: "uint256",
+            },
+          ],
+          name: "getSubmission",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "id",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "submitter",
+              type: "address",
+            },
+            {
+              internalType: "string[]",
+              name: "images",
+              type: "string[]",
+            },
+            {
+              internalType: "string",
+              name: "textHash",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "status",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "acceptCount",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "rejectCount",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "region",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "department",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "idDocHash",
+              type: "string",
+            },
+          ],
+          name: "registerContributor",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "contributorAddr",
+              type: "address",
+            },
+          ],
+          name: "reinstateContributor",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string[]",
+              name: "imageHashes",
+              type: "string[]",
+            },
+            {
+              internalType: "string",
+              name: "textHash",
+              type: "string",
+            },
+          ],
+          name: "submitContribution",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "submissionId",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "decisionStr",
+              type: "string",
+            },
+            {
+              internalType: "bytes32[]",
+              name: "merkleProof",
+              type: "bytes32[]",
+            },
+          ],
+          name: "submitVerification",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 1,
+    },
+  },
+} as const;
 
 export default deployedContracts satisfies GenericContractsDeclaration;

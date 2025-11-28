@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     YourContract: {
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
       abi: [
         {
           inputs: [],
@@ -42,10 +42,23 @@ const deployedContracts = {
               name: "contributor",
               type: "address",
             },
+          ],
+          name: "ContributorBanned",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "contributor",
+              type: "address",
+            },
             {
               indexed: false,
               internalType: "int256",
-              name: "newRewardPoints",
+              name: "points",
               type: "int256",
             },
           ],
@@ -70,18 +83,31 @@ const deployedContracts = {
           inputs: [
             {
               indexed: true,
+              internalType: "address",
+              name: "contributor",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "int256",
+              name: "points",
+              type: "int256",
+            },
+          ],
+          name: "ContributorRewarded",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
               internalType: "uint256",
               name: "submissionId",
               type: "uint256",
             },
-            {
-              indexed: false,
-              internalType: "enum YourContract.Status",
-              name: "status",
-              type: "uint8",
-            },
           ],
-          name: "SubmissionFinalized",
+          name: "SubmissionDeleted",
           type: "event",
         },
         {
@@ -95,12 +121,24 @@ const deployedContracts = {
             },
             {
               indexed: false,
-              internalType: "string",
-              name: "decision",
-              type: "string",
+              internalType: "enum YourContract.Status",
+              name: "status",
+              type: "uint8",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "validAccepts",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "validRejects",
+              type: "uint256",
             },
           ],
-          name: "VerificationSubmitted",
+          name: "SubmissionFinalized",
           type: "event",
         },
         {
@@ -123,15 +161,47 @@ const deployedContracts = {
           type: "event",
         },
         {
+          anonymous: false,
           inputs: [
             {
+              indexed: true,
               internalType: "uint256",
               name: "submissionId",
               type: "uint256",
             },
             {
+              indexed: true,
+              internalType: "address",
+              name: "verifier",
+              type: "address",
+            },
+          ],
+          name: "VoteSubmitted",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_contributorAddr",
+              type: "address",
+            },
+          ],
+          name: "banContributor",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_sid",
+              type: "uint256",
+            },
+            {
               internalType: "bytes32",
-              name: "merkleRoot",
+              name: "_merkleRoot",
               type: "bytes32",
             },
           ],
@@ -191,7 +261,7 @@ const deployedContracts = {
             },
             {
               internalType: "int256",
-              name: "rewardPoints",
+              name: "score",
               type: "int256",
             },
             {
@@ -217,6 +287,19 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "submissionId",
+              type: "uint256",
+            },
+          ],
+          name: "deleteSubmission",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
           inputs: [],
           name: "getBannedContributors",
           outputs: [
@@ -233,7 +316,7 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "uint256",
-              name: "submissionId",
+              name: "_subID",
               type: "uint256",
             },
           ],
@@ -271,13 +354,13 @@ const deployedContracts = {
             },
             {
               internalType: "uint256",
-              name: "acceptCount",
+              name: "voteCount",
               type: "uint256",
             },
             {
-              internalType: "uint256",
-              name: "rejectCount",
-              type: "uint256",
+              internalType: "bool",
+              name: "finalized",
+              type: "bool",
             },
           ],
           stateMutability: "view",
@@ -299,18 +382,31 @@ const deployedContracts = {
         {
           inputs: [
             {
+              internalType: "uint256",
+              name: "submissionId",
+              type: "uint256",
+            },
+          ],
+          name: "reVerifySubmission",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
               internalType: "string",
-              name: "region",
+              name: "_region",
               type: "string",
             },
             {
               internalType: "string",
-              name: "department",
+              name: "_department",
               type: "string",
             },
             {
               internalType: "string",
-              name: "idDocHash",
+              name: "_idDocHash",
               type: "string",
             },
           ],
@@ -323,7 +419,7 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "address",
-              name: "contributorAddr",
+              name: "_contributorAddr",
               type: "address",
             },
           ],
@@ -335,13 +431,90 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "string[]",
-              name: "imageHashes",
-              type: "string[]",
+              internalType: "uint256",
+              name: "_subID",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "_salt",
+              type: "string",
+            },
+            {
+              internalType: "address[3]",
+              name: "_assignedVerifiers",
+              type: "address[3]",
+            },
+          ],
+          name: "revealFinalSubmissionDecision",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "submissions",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "id",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "submitter",
+              type: "address",
             },
             {
               internalType: "string",
               name: "textHash",
+              type: "string",
+            },
+            {
+              internalType: "enum YourContract.Status",
+              name: "status",
+              type: "uint8",
+            },
+            {
+              internalType: "uint256",
+              name: "creationTimestamp",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes32",
+              name: "currentMerkleRoot",
+              type: "bytes32",
+            },
+            {
+              internalType: "uint256",
+              name: "roundStartTime",
+              type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "finalized",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string[]",
+              name: "_imageHashes",
+              type: "string[]",
+            },
+            {
+              internalType: "string",
+              name: "_textHash",
               type: "string",
             },
           ],
@@ -360,17 +533,17 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "uint256",
-              name: "submissionId",
+              name: "_subID",
               type: "uint256",
             },
             {
               internalType: "string",
-              name: "decisionStr",
+              name: "_decision",
               type: "string",
             },
             {
               internalType: "bytes32[]",
-              name: "merkleProof",
+              name: "_merkleProof",
               type: "bytes32[]",
             },
           ],
@@ -381,7 +554,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 1,
+      deployedOnBlock: 6,
     },
   },
 } as const;

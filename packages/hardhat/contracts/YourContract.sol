@@ -27,7 +27,7 @@ library MerkleProof {
     }
 }
 
-contract FinalEco {
+contract YourContract {
 
     address public owner;
     address public coordinator;

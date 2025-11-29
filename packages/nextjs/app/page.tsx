@@ -1,81 +1,242 @@
 "use client";
 
 import Link from "next/link";
-import { Address } from "@scaffold-ui/components";
-import type { NextPage } from "next";
-import { hardhat } from "viem/chains";
 import { useAccount } from "wagmi";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { useTargetNetwork } from "~~/hooks/scaffold-eth";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
-const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
-  const { targetNetwork } = useTargetNetwork();
+export default function Home() {
+  const { address, isConnected } = useAccount();
+
+  const { data: contributor } = useScaffoldReadContract({
+    contractName: "YourContract",
+    functionName: "contributors",
+    args: [address],
+  });
+
+  const isRegistered = contributor?.registered;
+  const contributorScore = contributor?.score ? Number(contributor.score) : 0;
 
   return (
-    <>
-      <div className="flex items-center flex-col grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
+      {/* Hero Section */}
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-green-800 mb-4">
+            Welcome to ContributorDAO
           </h1>
-          <div className="flex justify-center items-center space-x-2 flex-col">
-            <p className="my-2 font-medium">Connected Address:</p>
-            <Address
-              address={connectedAddress}
-              chain={targetNetwork}
-              blockExplorerAddressLink={
-                targetNetwork.id === hardhat.id ? `/blockexplorer/address/${connectedAddress}` : undefined
-              }
-            />
-          </div>
-
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
+          <p className="text-xl text-green-700 max-w-2xl mx-auto">
+            A decentralized platform for verifying and rewarding quality contributions 
+            through community consensus
           </p>
         </div>
 
-        <div className="grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col md:flex-row">
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <BugAntIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contracts
-                </Link>{" "}
-                tab.
-              </p>
+        {/* User Status Card */}
+        {isConnected && (
+          <div className="max-w-2xl mx-auto mb-12">
+            <div className="bg-white rounded-xl shadow-lg p-8 border-2 border-green-200">
+              <h2 className="text-2xl font-bold text-green-800 mb-4">
+                Your Status
+              </h2>
+              
+              {isRegistered ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-green-700 font-medium">Status:</span>
+                    <span className="px-4 py-2 bg-green-100 text-green-800 rounded-lg font-semibold">
+                      Registered ✓
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-green-700 font-medium">Score:</span>
+                    <span className={`px-4 py-2 rounded-lg font-bold text-xl ${
+                      contributorScore >= 0 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {contributorScore}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-green-700 font-medium">Region:</span>
+                    <span className="text-green-900">{contributor.region}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-green-700 font-medium">Department:</span>
+                    <span className="text-green-900">{contributor.department}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-green-700 font-medium">Active:</span>
+                    <span className={`px-3 py-1 rounded-lg font-semibold ${
+                      contributor.active 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {contributor.active ? 'Yes' : 'Banned'}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-4">
+                  <p className="text-green-700 mb-4">You are not registered yet.</p>
+                  <Link
+                    href="/register"
+                    className="inline-block px-6 py-3 bg-green-600 text-black rounded-lg hover:bg-green-700 transition-colors font-semibold"
+                  >
+                    Register Now
+                  </Link>
+                </div>
+              )}
             </div>
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Explore your local transactions with the{" "}
-                <Link href="/blockexplorer" passHref className="link">
-                  Block Explorer
-                </Link>{" "}
-                tab.
-              </p>
+          </div>
+        )}
+
+        {/* Features Grid */}
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-12">
+          <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-200 hover:border-green-400 transition-colors">
+            <div className="text-4xl mb-4">📝</div>
+            <h3 className="text-xl font-bold text-green-800 mb-2">
+              Submit Contributions
+            </h3>
+            <p className="text-green-700">
+              Share your work with images and text. Earn points when your contributions are accepted.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-200 hover:border-green-400 transition-colors">
+            <div className="text-4xl mb-4">✅</div>
+            <h3 className="text-xl font-bold text-green-800 mb-2">
+              Verify Submissions
+            </h3>
+            <p className="text-green-700">
+              Review others' contributions and vote. Earn rewards for participating in consensus.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-green-200 hover:border-green-400 transition-colors">
+            <div className="text-4xl mb-4">🏆</div>
+            <h3 className="text-xl font-bold text-green-800 mb-2">
+              Earn Reputation
+            </h3>
+            <p className="text-green-700">
+              Build your reputation score through quality contributions and fair verification.
+            </p>
+          </div>
+        </div>
+
+        {/* How It Works */}
+        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 border-2 border-green-200">
+          <h2 className="text-3xl font-bold text-green-800 mb-6 text-center">
+            How It Works
+          </h2>
+          
+          <div className="space-y-6">
+            <div className="flex items-start space-x-4">
+              <div className="flex-shrink-0 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">
+                1
+              </div>
+              <div>
+                <h4 className="font-bold text-green-800 mb-1">Register</h4>
+                <p className="text-green-700">
+                  Connect your wallet and register with your region, department, and ID document hash.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-4">
+              <div className="flex-shrink-0 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">
+                2
+              </div>
+              <div>
+                <h4 className="font-bold text-green-800 mb-1">Submit Contributions</h4>
+                <p className="text-green-700">
+                  Upload your work with image hashes and text hash. Your submission enters the pending queue.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-4">
+              <div className="flex-shrink-0 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">
+                3
+              </div>
+              <div>
+                <h4 className="font-bold text-green-800 mb-1">Verification Process</h4>
+                <p className="text-green-700">
+                  Assigned verifiers review and vote within a 5-minute window. Consensus determines acceptance.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-4">
+              <div className="flex-shrink-0 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">
+                4
+              </div>
+              <div>
+                <h4 className="font-bold text-green-800 mb-1">Earn Rewards</h4>
+                <p className="text-green-700">
+                  Accepted contributions earn +4 points. Verifiers earn points for voting and reaching consensus.
+                </p>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Point System */}
+        <div className="max-w-4xl mx-auto mt-8 bg-white rounded-xl shadow-lg p-8 border-2 border-green-200">
+          <h2 className="text-3xl font-bold text-green-800 mb-6 text-center">
+            Point System
+          </h2>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="font-bold text-green-800 mb-3">Earn Points</h4>
+              <ul className="space-y-2 text-green-700">
+                <li className="flex items-center">
+                  <span className="text-green-600 mr-2">+4</span>
+                  Contribution Accepted
+                </li>
+                <li className="flex items-center">
+                  <span className="text-green-600 mr-2">+2</span>
+                  Voting with Consensus
+                </li>
+                <li className="flex items-center">
+                  <span className="text-green-600 mr-2">+1</span>
+                  Valid Verification Vote
+                </li>
+                <li className="flex items-center">
+                  <span className="text-green-600 mr-2">+1</span>
+                  Contribution Rejected (effort)
+                </li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-bold text-red-800 mb-3">Lose Points</h4>
+              <ul className="space-y-2 text-red-700">
+                <li className="flex items-center">
+                  <span className="text-red-600 mr-2">-1</span>
+                  No Response When Assigned
+                </li>
+                <li className="flex items-center">
+                  <span className="text-red-600 mr-2">≤-3</span>
+                  Automatic Ban
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA Section */}
+        {!isConnected && (
+          <div className="text-center mt-12">
+            <p className="text-xl text-green-700 mb-4">
+              Ready to get started?
+            </p>
+            <p className="text-green-600">
+              Connect your wallet to begin your journey!
+            </p>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
-};
-
-export default Home;
+}

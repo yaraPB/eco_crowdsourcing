@@ -20,7 +20,6 @@ export const HeaderMenuLinks = () => {
   const pathname = usePathname();
   const { address } = useAccount();
 
-  // Read owner and coordinator addresses
   const { data: owner } = useScaffoldReadContract({
     contractName: "YourContract",
     functionName: "owner",
@@ -31,7 +30,6 @@ export const HeaderMenuLinks = () => {
     functionName: "coordinator",
   });
 
-  // Read contributor data
   const { data: contributor } = useScaffoldReadContract({
     contractName: "YourContract",
     functionName: "contributors",
@@ -41,9 +39,8 @@ export const HeaderMenuLinks = () => {
   const isOwner = address && owner && address.toLowerCase() === owner.toLowerCase();
   const isCoordinator = address && coordinator && address.toLowerCase() === coordinator.toLowerCase();
   const isAdmin = isOwner || isCoordinator;
-  const isRegistered = contributor && contributor[0] === true; // Check index 0 for registered boolean
+  const isRegistered = contributor && contributor[0] === true;
 
-  // Build menu links based on user role
   const menuLinks: HeaderMenuLink[] = [
     {
       label: "Home",
@@ -51,7 +48,6 @@ export const HeaderMenuLinks = () => {
     },
   ];
 
-  // Add register link if not registered
   if (address && !isRegistered) {
     menuLinks.push({
       label: "Register",
@@ -59,13 +55,8 @@ export const HeaderMenuLinks = () => {
     });
   }
 
-  // Add contributor links if registered
   if (isRegistered) {
     menuLinks.push(
-      {
-        label: "Submissions",
-        href: "/submissions",
-      },
       {
         label: "Verify",
         href: "/verify",
@@ -73,7 +64,17 @@ export const HeaderMenuLinks = () => {
     );
   }
 
-  // Add admin link if user is owner or coordinator
+  menuLinks.push(
+    {
+      label: "Submissions",
+      href: "/submissions",
+    },
+    {
+      label: "Verify",
+      href: "/verify",
+    }
+  );
+
   if (isAdmin) {
     menuLinks.push({
       label: "Admin Panel",
@@ -81,7 +82,6 @@ export const HeaderMenuLinks = () => {
     });
   }
 
-  // Always show debug contracts
   menuLinks.push({
     label: "Debug Contracts",
     href: "/debug",
@@ -111,9 +111,6 @@ export const HeaderMenuLinks = () => {
   );
 };
 
-/**
- * Site header
- */
 export const Header = () => {
   const { targetNetwork } = useTargetNetwork();
   const isLocalNetwork = targetNetwork.id === hardhat.id;

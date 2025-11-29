@@ -96,7 +96,7 @@ contract YourContract {
 
     enum Status { Pending, Accepted, Rejected }
 
-    uint private submissionCounter;
+    uint public submissionCounter;
     mapping(uint => Submission) public submissions;
     mapping(address => Contributor) public contributors;
     address[] public contributorList;

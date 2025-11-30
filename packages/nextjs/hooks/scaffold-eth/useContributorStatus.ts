@@ -1,13 +1,14 @@
 import { useAccount } from "wagmi";
-import { useScaffoldReadContract } from "./index";
+import { useScaffoldReadContract } from "./useScaffoldReadContract";
 
 export function useContributorStatus() {
   const { address } = useAccount();
 
-  const { data: contributor, isLoading } = useScaffoldReadContract({
+  const { data: contributorData, isLoading: contributorLoading } = useScaffoldReadContract({
     contractName: "YourContract",
     functionName: "contributors",
-    args: [address],
+    args: address ? [address] : undefined,
+    watch: true, // Watch for changes to prevent global notification bug
   });
 
   const { data: owner } = useScaffoldReadContract({
@@ -20,12 +21,13 @@ export function useContributorStatus() {
     functionName: "coordinator",
   });
 
-  const isRegistered = contributor ? contributor[0] === true : false;
-  const isActive = contributor ? contributor[5] === true : false;
-  const score = contributor ? Number(contributor[4]) : 0;
-  const region = contributor ? contributor[1] : "";
-  const department = contributor ? contributor[2] : "";
-  
+  const isRegistered = contributorData?.[0] ?? false; // registered
+  const region = contributorData?.[1] ?? "";
+  const department = contributorData?.[2] ?? "";
+  const idDocHash = contributorData?.[3] ?? "";
+  const score = contributorData?.[4] ? Number(contributorData[4]) : 0;
+  const isActive = contributorData?.[5] ?? false;
+
   const isOwner = address && owner ? address.toLowerCase() === owner.toLowerCase() : false;
   const isCoordinator = address && coordinator ? address.toLowerCase() === coordinator.toLowerCase() : false;
   const isAdmin = isOwner || isCoordinator;
@@ -33,14 +35,14 @@ export function useContributorStatus() {
   return {
     address,
     isRegistered,
-    isActive,
-    score,
     region,
     department,
+    idDocHash,
+    score,
+    isActive,
     isOwner,
     isCoordinator,
     isAdmin,
-    isLoading,
-    contributor,
+    isLoading: contributorLoading,
   };
 }

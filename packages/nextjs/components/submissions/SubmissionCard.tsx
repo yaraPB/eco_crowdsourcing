@@ -7,7 +7,7 @@ interface SubmissionCardProps {
 }
 
 export function SubmissionCard({ submissionId }: SubmissionCardProps) {
-  const { data: submission, isLoading, isError, error } = useScaffoldReadContract({
+  const { data: submissionData, isLoading } = useScaffoldReadContract({
     contractName: "YourContract",
     functionName: "getSubmission",
     args: [BigInt(submissionId)],
@@ -15,78 +15,79 @@ export function SubmissionCard({ submissionId }: SubmissionCardProps) {
 
   if (isLoading) {
     return (
-      <div className="rounded-xl shadow-lg p-6 border-2 border-gray-300 bg-gray-50 animate-pulse">
-        <div className="flex justify-between mb-4">
-          <div className="h-6 bg-gray-300 rounded w-1/3"></div>
-          <div className="h-6 bg-gray-300 rounded w-1/4"></div>
-        </div>
-        <div className="space-y-3">
-          <div className="h-4 bg-gray-300 rounded w-full"></div>
-          <div className="h-4 bg-gray-300 rounded w-2/3"></div>
+      <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-gray-300">
+        <div className="animate-pulse">
+          <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
         </div>
       </div>
     );
   }
 
-  if (isError || !submission) {
-    return (
-      <div className="rounded-xl shadow-lg p-6 border-2 border-red-300 bg-red-50">
-        <p className="text-red-700 font-semibold">Error loading submission #{submissionId}</p>
-        <p className="text-red-600 text-sm mt-1">{error?.message || "Submission not found"}</p>
-      </div>
-    );
+  if (!submissionData) {
+    return null;
   }
 
-  const [id, submitter, images, textHash, status, timestamp, voteCount, finalized] = submission;
+  const [id, submitter, images, textHash, status, timestamp, voteCount, finalized] = submissionData;
 
-  const getStatusColor = () => {
-    if (status === "Accepted") return "bg-green-100 border-green-400 text-green-800";
-    if (status === "Rejected") return "bg-red-100 border-red-400 text-red-800";
-    return "bg-yellow-100 border-yellow-400 text-yellow-800";
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Accepted":
+        return "bg-green-100 border-green-400 text-green-800";
+      case "Rejected":
+        return "bg-red-100 border-red-400 text-red-800";
+      default:
+        return "bg-yellow-100 border-yellow-400 text-yellow-800";
+    }
   };
 
-  const getStatusIcon = () => {
-    if (status === "Accepted") return "✅";
-    if (status === "Rejected") return "❌";
-    return "⏳";
+  const getStatusEmoji = (status: string) => {
+    switch (status) {
+      case "Accepted":
+        return "✅";
+      case "Rejected":
+        return "❌";
+      default:
+        return "⏳";
+    }
   };
 
   return (
-    <div className={`rounded-xl shadow-lg p-6 border-2 ${getStatusColor()} transition-all hover:shadow-xl`}>
+    <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-[#800020]">
       <div className="flex justify-between items-start mb-4">
         <div>
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-3xl">{getStatusIcon()}</span>
-            <h3 className="text-xl font-bold">Submission #{Number(id)}</h3>
+          <h3 className="text-xl font-bold text-[#800020]">Submission #{id.toString()}</h3>
+          <div className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mt-2 border-2 ${getStatusColor(status)}`}>
+            {getStatusEmoji(status)} {status}
           </div>
-          <p className="text-sm opacity-75 font-mono">
-            By: {submitter?.slice(0, 6)}...{submitter?.slice(-4)}
-          </p>
         </div>
         <div className="text-right">
-          <span
-            className={`px-4 py-2 rounded-lg font-bold ${
-              status === "Accepted" ? "bg-green-200" : status === "Rejected" ? "bg-red-200" : "bg-yellow-200"
-            }`}
-          >
-            {status}
-          </span>
-          {finalized && <p className="text-xs mt-1 opacity-75">Finalized</p>}
+          <p className="text-sm text-gray-600">Votes: {voteCount.toString()}</p>
+          <p className="text-xs text-gray-500">
+            {finalized ? "Finalized" : "Open for voting"}
+          </p>
         </div>
       </div>
 
       <div className="space-y-3">
         <div>
-          <span className="font-semibold">Text Hash:</span>
-          <p className="font-mono text-sm break-all opacity-75 mt-1">{textHash}</p>
+          <p className="text-sm font-semibold text-gray-700">Submitter:</p>
+          <p className="text-xs font-mono text-gray-600 break-all">{submitter}</p>
         </div>
 
-        {images && images.length > 0 && (
+        <div>
+          <p className="text-sm font-semibold text-gray-700">Text Hash:</p>
+          <p className="text-xs font-mono text-gray-600 break-all">{textHash}</p>
+        </div>
+
+        {images.length > 0 && (
           <div>
-            <span className="font-semibold">Images ({images.length}):</span>
-            <div className="space-y-1 mt-1">
+            <p className="text-sm font-semibold text-gray-700 mb-1">
+              Image Hashes ({images.length}):
+            </p>
+            <div className="space-y-1 max-h-32 overflow-y-auto">
               {images.map((hash: string, idx: number) => (
-                <p key={idx} className="font-mono text-xs break-all opacity-75">
+                <p key={idx} className="text-xs font-mono text-gray-600 break-all">
                   {idx + 1}. {hash}
                 </p>
               ))}
@@ -94,9 +95,10 @@ export function SubmissionCard({ submissionId }: SubmissionCardProps) {
           </div>
         )}
 
-        <div className="flex justify-between items-center pt-3 border-t border-current opacity-50">
-          <span className="text-sm">👥 {Number(voteCount)} votes</span>
-          <span className="text-sm">📅 {new Date(Number(timestamp) * 1000).toLocaleDateString()}</span>
+        <div className="pt-2 border-t border-gray-200">
+          <p className="text-xs text-gray-500">
+            Submitted: {new Date(Number(timestamp) * 1000).toLocaleString()}
+          </p>
         </div>
       </div>
     </div>

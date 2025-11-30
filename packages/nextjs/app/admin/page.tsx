@@ -14,9 +14,8 @@ export default function AdminPage() {
 
   if (!address) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] flex items-center justify-center">
         <div className="bg-white rounded-xl shadow-lg p-12 max-w-md text-center">
-          <div className="text-6xl mb-4">🔌</div>
           <h2 className="text-2xl font-bold text-[#800020] mb-4">Wallet Not Connected</h2>
           <p className="text-gray-600">Please connect your wallet to access the admin panel.</p>
         </div>
@@ -26,7 +25,7 @@ export default function AdminPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-white mb-4"></div>
           <p className="text-white text-xl">Checking permissions...</p>
@@ -37,7 +36,7 @@ export default function AdminPage() {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] flex items-center justify-center">
         <div className="bg-red-50 rounded-xl shadow-lg p-12 max-w-md text-center border-4 border-red-400">
           <div className="text-6xl mb-4">🚫</div>
           <h2 className="text-2xl font-bold text-red-700 mb-4">Access Denied</h2>
@@ -48,7 +47,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] py-12">
+    <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
@@ -68,19 +67,20 @@ export default function AdminPage() {
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8 border-2 border-white/20">
-            <h3 className="text-xl font-bold text-white mb-4">📖 Admin Workflow</h3>
+            <h3 className="text-xl font-bold text-white mb-4">Rules that the Admin follows</h3>
             <div className="text-white/90 space-y-2 text-sm">
               <p>
-                <strong>1. Commit Verifiers:</strong> Assign verifiers to a pending submission using merkle root
+                <strong>1. Commit Verifiers:</strong> Assign 8 verifiers to a pending submissions
               </p>
               <p>
-                <strong>2. Wait for Votes:</strong> Verifiers submit their votes with merkle proofs (5 min window)
+                <strong>2. Wait for Votes:</strong> Verifiers submit their votes with 3-element merkle proofs and they have a window 2 months
               </p>
               <p>
-                <strong>3. Finalize Submission:</strong> Reveal the salt to verify proofs and finalize the decision
+                <strong>3. Finalize Submission:</strong> Reveal the salt at the end to verify proofs and finalize the decision (requires 5 votes for consensus)
               </p>
               <p>
-                <strong>4. Optional:</strong> Re-verify if needed, or manage contributors (ban/reinstate)
+                <strong>4. Optional:</strong> Reassign contributors when verification is needed
+                <strong>5. Manage Contributors</ strong> Ban or reinstate them
               </p>
             </div>
           </div>
@@ -104,14 +104,13 @@ export default function AdminPage() {
             <h3 className="text-lg font-bold text-blue-800 mb-3">ℹ️ Important Notes</h3>
             <ul className="space-y-2 text-blue-700 text-sm">
               <li>
-                • <strong>commitVerifiers</strong> starts a new verification round with a 5-minute voting window
+                • <strong>commitVerifiers</strong> starts a new verification round with a 2-month voting window (8 verifiers required)
               </li>
               <li>
-                • <strong>revealFinalSubmissionDecision</strong> finalizes votes and distributes rewards/penalties
+                • <strong>revealFinalSubmissionDecision</strong> requires 3-element merkle proofs and finalizes votes (needs 5 votes for consensus)
               </li>
               <li>
-                • <strong>reVerifySubmission</strong> resets a finalized submission to pending (must call commitVerifiers
-                after)
+                • <strong>reVerifySubmission</strong> resets a finalized submission to pending (must call commitVerifiers after)
               </li>
               <li>
                 • <strong>deleteSubmission</strong> permanently removes a submission from the contract

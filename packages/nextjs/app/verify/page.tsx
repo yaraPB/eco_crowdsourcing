@@ -46,9 +46,8 @@ export default function VerifyPage() {
 
   if (!address) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] flex items-center justify-center">
         <div className="bg-white rounded-xl shadow-lg p-12 max-w-md text-center">
-          <div className="text-6xl mb-4">🔌</div>
           <h2 className="text-2xl font-bold text-[#800020] mb-4">Wallet Not Connected</h2>
           <p className="text-gray-600">Please connect your wallet to verify submissions.</p>
         </div>
@@ -58,7 +57,7 @@ export default function VerifyPage() {
 
   if (!isRegistered) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] py-12">
+      <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] py-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="bg-yellow-50 border-2 border-yellow-400 rounded-xl p-8 text-center">
             <div className="text-6xl mb-4">⚠️</div>
@@ -78,7 +77,7 @@ export default function VerifyPage() {
 
   if (!isActive) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] py-12">
+      <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] py-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="bg-red-50 border-2 border-red-400 rounded-xl p-8 text-center">
             <div className="text-6xl mb-4">🚫</div>
@@ -91,7 +90,7 @@ export default function VerifyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] py-12">
+    <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
@@ -119,7 +118,7 @@ export default function VerifyPage() {
             </div>
             <p className="text-white/80 text-sm mt-4">
               <strong>Note:</strong> Only assigned verifiers with valid merkle proofs will have their votes counted.
-              Everyone can submit, but only valid votes are processed.
+              Everyone can submit, but only valid votes are processed. Verification window is 2 months.
             </p>
           </div>
 
@@ -136,7 +135,6 @@ export default function VerifyPage() {
 
               {pendingSubmissions.length === 0 ? (
                 <div className="bg-white rounded-xl shadow-lg p-12 border-2 border-[#800020] text-center">
-                  <div className="text-6xl mb-4">✨</div>
                   <p className="text-gray-700 text-lg">No pending submissions at the moment.</p>
                   <p className="text-gray-500 text-sm mt-2">Check back later for new contributions to verify.</p>
                 </div>

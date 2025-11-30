@@ -3,27 +3,41 @@ pragma solidity ^0.8.17;
 
 library MerkleProof {
     function verifyInclusion(bytes32[] memory _proof, bytes32 _root, bytes32 _leaf) internal pure returns (bool) {
-        require(_proof.length == 2, "Proof must have exactly 2 elements");
-        bytes32 computedHash = _leaf;
+        require(_proof.length == 3, "Proof must have exactly 3 elements");
+        
+        bytes32 hash = _leaf;
 
-        bytes32 option1 = keccak256(abi.encodePacked(
-            keccak256(abi.encodePacked(computedHash, _proof[0])),
-            _proof[1]
-        ));
-        bytes32 option2 = keccak256(abi.encodePacked(
-            keccak256(abi.encodePacked(_proof[0], computedHash)),
-            _proof[1]
-        ));
-        bytes32 option3 = keccak256(abi.encodePacked(
-            _proof[1],
-            keccak256(abi.encodePacked(computedHash, _proof[0]))
-        ));
-        bytes32 option4 = keccak256(abi.encodePacked(
-            _proof[1],
-            keccak256(abi.encodePacked(_proof[0], computedHash))
-        ));
-
-        return (option1 == _root || option2 == _root || option3 == _root || option4 == _root);
+        // Try all 8 possible paths (2^3 for 3 levels)
+        for (uint256 i = 0; i < 8; i++) {
+            bytes32 computedHash = hash;
+            
+            // Level 1
+            if (i & 1 == 0) {
+                computedHash = keccak256(abi.encodePacked(computedHash, _proof[0]));
+            } else {
+                computedHash = keccak256(abi.encodePacked(_proof[0], computedHash));
+            }
+            
+            // Level 2
+            if (i & 2 == 0) {
+                computedHash = keccak256(abi.encodePacked(computedHash, _proof[1]));
+            } else {
+                computedHash = keccak256(abi.encodePacked(_proof[1], computedHash));
+            }
+            
+            // Level 3
+            if (i & 4 == 0) {
+                computedHash = keccak256(abi.encodePacked(computedHash, _proof[2]));
+            } else {
+                computedHash = keccak256(abi.encodePacked(_proof[2], computedHash));
+            }
+            
+            if (computedHash == _root) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }
 
@@ -32,10 +46,10 @@ contract YourContract {
     address public owner;
     address public coordinator;
 
-    uint constant VERIFICATION_THRESHOLD = 2; // to reach consensus, we need at minimum 2 verifiers having the same opinion
-    uint constant VERIFICATION_WINDOW = 300; // 5 min
+    uint constant VERIFICATION_THRESHOLD = 5; // to reach consensus, we need at minimum 5 verifiers having the same opinion
+    uint constant VERIFICATION_WINDOW = 5256000; // 2 months in seconds
     int constant VERIFICATION_REWARD = 1;
-    int constant VERIFICATION_CONSENSUS_REWARD = 2;
+    int constant VERIFICATION_CONSENSUS_REWARD = 1;
     int constant CONTRIBUTION_ACCEPTED = 4;
     int constant CONTRIBUTION_REJECTED = 1;
     int constant NON_RESPONSE_PENALTY = -1;
@@ -75,6 +89,7 @@ contract YourContract {
         string decision;
         bytes32 proof0;
         bytes32 proof1;
+        bytes32 proof2;
         bool verified; // for after we check the salt
     }
 
@@ -175,7 +190,7 @@ contract YourContract {
         require(!s.finalized, "Already finalized");
         require(block.timestamp <= s.roundStartTime + VERIFICATION_WINDOW, "Verification window expired");
         require(!s.hasSubmitted[msg.sender], "Already submitted");
-        require(_merkleProof.length == 2, "Invalid proof length");
+        require(_merkleProof.length == 3, "Invalid proof length");
 
         require(
             keccak256(bytes(_decision)) == keccak256(bytes("Accept")) || 
@@ -188,6 +203,7 @@ contract YourContract {
         newVote.decision = _decision;
         newVote.proof0 = _merkleProof[0];
         newVote.proof1 = _merkleProof[1];
+        newVote.proof2 = _merkleProof[2];
         newVote.verified = false;
         
         s.votes.push(newVote);
@@ -196,16 +212,16 @@ contract YourContract {
         emit VoteSubmitted(_subID, msg.sender);
     }
 
-    // Only finalized if concensus is reached by assigned voters, else the submission will still be marked as pending and the coordinator reassigns it
+    // Only finalized if consensus is reached by assigned voters, else the submission will still be marked as pending and the coordinator reassigns it
     function revealFinalSubmissionDecision
-    ( uint _subID, string memory _salt, address[3] memory _assignedVerifiers) 
+    ( uint _subID, string memory _salt, address[8] memory _assignedVerifiers) 
     external onlyCoordinator 
     {
         Submission storage s = submissions[_subID];
         require(s.id != 0, "Submission not found");
         require(!s.finalized, "Already finalized");
         require(block.timestamp > s.roundStartTime + VERIFICATION_WINDOW || 
-            s.votes.length >= VERIFICATION_THRESHOLD, "Wait for deadline or for at least 2 to vote");
+            s.votes.length >= VERIFICATION_THRESHOLD, "Wait for deadline or for at least 5 to vote");
 
         uint validAcceptCount;
         uint validRejectCount;
@@ -215,9 +231,10 @@ contract YourContract {
             Vote storage vote = s.votes[i];
             
             // rebuild proof array
-            bytes32[] memory proof = new bytes32[](2);
+            bytes32[] memory proof = new bytes32[](3);
             proof[0] = vote.proof0;
             proof[1] = vote.proof1;
+            proof[2] = vote.proof2;
             
             // Verify the proof with the _salt
             bytes32 leaf = keccak256(abi.encodePacked(vote.verifier, _salt));

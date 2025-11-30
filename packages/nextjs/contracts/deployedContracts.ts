@@ -441,9 +441,9 @@ const deployedContracts = {
               type: "string",
             },
             {
-              internalType: "address[3]",
+              internalType: "address[8]",
               name: "_assignedVerifiers",
-              type: "address[3]",
+              type: "address[8]",
             },
           ],
           name: "revealFinalSubmissionDecision",

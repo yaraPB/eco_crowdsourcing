@@ -61,7 +61,7 @@ export default function SubmissionsPage() {
   const canSubmit = isRegistered && isActive;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] py-12">
+    <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-8">

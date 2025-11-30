@@ -37,9 +37,8 @@ export default function RegisterPage() {
 
   if (!address) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] flex items-center justify-center">
         <div className="bg-white rounded-xl shadow-lg p-12 max-w-md text-center">
-          <div className="text-6xl mb-4">🔌</div>
           <h2 className="text-2xl font-bold text-[#800020] mb-4">Wallet Not Connected</h2>
           <p className="text-gray-600">Please connect your wallet to register as a contributor.</p>
         </div>
@@ -49,7 +48,7 @@ export default function RegisterPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-white mb-4"></div>
           <p className="text-white text-xl">Checking registration status...</p>
@@ -60,7 +59,7 @@ export default function RegisterPage() {
 
   if (isRegistered) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] flex items-center justify-center">
         <div className="bg-white rounded-xl shadow-lg p-12 max-w-md text-center">
           <div className="text-6xl mb-4">✅</div>
           <h2 className="text-2xl font-bold text-[#800020] mb-4">Already Registered</h2>
@@ -77,13 +76,13 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] py-12">
+    <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] py-12">
       <div className="container mx-auto px-4 max-w-2xl">
         <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12">
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">📝</div>
             <h1 className="text-4xl font-bold text-[#800020] mb-2">Contributor Registration</h1>
-            <p className="text-gray-600">Join the ContributorDAO community</p>
+            <p className="text-gray-600">Join the Eco_Crowdsoucing community</p>
           </div>
 
           <div className="space-y-6">
@@ -95,7 +94,7 @@ export default function RegisterPage() {
                 type="text"
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
-                placeholder="e.g., North America, Europe, Asia"
+                placeholder="e.g., Ifrane, Rabat, Casablanca, etc.."
                 className="w-full px-4 py-3 border-2 border-gray-300 text-black rounded-lg focus:border-[#800020] focus:outline-none transition-colors"
               />
             </div>
@@ -108,7 +107,7 @@ export default function RegisterPage() {
                 type="text"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
-                placeholder="e.g., Engineering, Marketing, Design"
+                placeholder="e.g., AUI, INTP, UM6P, etc..."
                 className="w-full px-4 py-3 border-2 border-gray-300 text-black rounded-lg focus:border-[#800020] focus:outline-none transition-colors"
               />
             </div>
@@ -121,7 +120,7 @@ export default function RegisterPage() {
                 type="text"
                 value={idDocHash}
                 onChange={(e) => setIdDocHash(e.target.value)}
-                placeholder="Hash of your identity document (IPFS hash, SHA256, etc.)"
+                placeholder="IPFS hash"
                 className="w-full px-4 py-3 border-2 border-gray-300 text-black rounded-lg focus:border-[#800020] focus:outline-none transition-colors font-mono text-sm"
               />
               <p className="text-gray-500 text-sm mt-1">

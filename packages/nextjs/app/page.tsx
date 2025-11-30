@@ -9,17 +9,16 @@ export default function Home() {
 
   if (!address) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] flex items-center justify-center">
         <div className="text-center max-w-2xl mx-auto px-4">
-          <h1 className="text-6xl font-bold text-white mb-6">🏛️ ContributorDAO</h1>
           <p className="text-2xl text-white/90 mb-8">
-            Decentralized Contribution Verification Platform
+            Decentralized Ecological Contribution Verification Platform
           </p>
           <p className="text-lg text-white/80 mb-8">
             Connect your wallet to get started as a verified contributor
           </p>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 border-2 border-white/20">
-            <p className="text-white text-left mb-4">🔐 Connect to:</p>
+            <p className="text-white text-left mb-4">Connect to:</p>
             <ul className="text-white/90 text-left space-y-2">
               <li>✓ Submit contributions for review</li>
               <li>✓ Verify submissions from other contributors</li>
@@ -34,7 +33,7 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-white mb-4"></div>
           <p className="text-white text-xl">Loading your profile...</p>
@@ -45,11 +44,10 @@ export default function Home() {
 
   if (!isRegistered) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] py-12">
+      <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] py-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="bg-white rounded-2xl shadow-2xl p-12 text-center">
-            <div className="text-6xl mb-6">👤</div>
-            <h1 className="text-4xl font-bold text-[#800020] mb-4">Welcome to ContributorDAO</h1>
+            <h1 className="text-4xl font-bold text-[#800020] mb-4">Welcome to Eco_CrowdSourcing</h1>
             <p className="text-xl text-gray-700 mb-8">
               You are not registered yet. Register to start contributing!
             </p>
@@ -76,7 +74,7 @@ export default function Home() {
 
   if (!isActive) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] py-12">
+      <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] py-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="bg-red-50 rounded-2xl shadow-2xl p-12 text-center border-4 border-red-400">
             <div className="text-6xl mb-6">🚫</div>
@@ -100,10 +98,10 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#800020] to-[#600018] py-12">
+    <div className="min-h-screen bg-gradient-to-b from-[#006233] to-[#80ba9e] py-12">
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-white mb-4">Welcome Back! 👋</h1>
+          <h1 className="text-5xl font-bold text-white mb-4">Welcome Back!</h1>
           <p className="text-xl text-white/90">Your Contributor Dashboard</p>
         </div>
 

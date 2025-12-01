@@ -134,6 +134,8 @@ contract YourContract {
 
     function registerContributor( string memory _region, string memory _department, string memory _idDocHash) public notBanned {
         require(!contributors[msg.sender].registered, "Already registered");
+        require(msg.sender != owner, "You're an owner");
+        require(msg.sender != coordinator, "You're a coordinator");
 
         contributors[msg.sender] = Contributor(true, _region, _department, _idDocHash, 0, true);
         contributorList.push(msg.sender);
